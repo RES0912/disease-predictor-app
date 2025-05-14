@@ -3,7 +3,7 @@ import pandas as pd
 import joblib
 import matplotlib.pyplot as plt
 
-# Load the trained model
+# Load the trained CatBoost model
 @st.cache_resource
 def load_model():
     return joblib.load("catboost_disease_model.pkl")
@@ -19,32 +19,35 @@ def predict_disease(input_dict):
 def plot_feature_importance(model, feature_names):
     importances = model.get_feature_importance()
     plt.figure(figsize=(8, 4))
-    plt.barh(feature_names, importances)
+    plt.barh(feature_names, importances, color="#4682B4")
     plt.xlabel("Importance")
     plt.title("Feature Importance")
     st.pyplot(plt.gcf())
-    st.image("dna.png", width=1000)
 
-    st.markdown("""
-    <style>
-        .stButton > button {
-            background-color: #ADD8E6;
-            color: light Blue;
-            padding: 10px 24px;
-            border: none;
-            cursor: pointer;
-            border-radius: 12px;
-            font-size: 16px;
-        }
-        .stButton > button:hover {
-            background-color: #FFFFFF;
-        }
+st.image("dna.png",width=1000)
+
+st.markdown("""
+<style>
     .stApp {
-        background-color: #ADD8E6;  /* Light blue background */
+        background-color: #ADD8E6;
     }
-    </style>
-    """, 
-    unsafe_allow_html=True)
+    .stButton > button {
+        background-color: #4682B4;
+        color: white;
+        padding: 10px 24px;
+        border: none;
+        cursor: pointer;
+        border-radius: 12px;
+        font-size: 16px;
+    }
+    .stButton > button:hover {
+        background-color: #87CEFA;
+        color: black;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+
 
 
 inputs = {}
@@ -52,7 +55,6 @@ features = [
     "hematocrit", "hemoglobin", "mch", "mchc", "mcv", "wbc", 
     "neutrophils", "lymphocytes", "monocytes", "eosinophils", "basophils"
 ]
-
 defaults = [45, 15, 30, 35, 90, 7, 60, 30, 6, 2, 1]
 
 for name, default in zip(features, defaults):
@@ -63,7 +65,7 @@ if st.button("Predict Disease"):
     st.success(f"Predicted Disease: {pred}")
     st.info(f"Confidence: {conf:.2f}%")
 
-    st.markdown(" Feature Importance")
+    st.markdown("Feature Importance")
     plot_feature_importance(model, features)
 
     st.markdown(" Download Your Prediction")
@@ -74,6 +76,7 @@ if st.button("Predict Disease"):
     st.download_button("Download CSV", csv, "prediction_result.csv")
 
 st.divider()
+
 
 st.header(" Batch Prediction from CSV")
 uploaded_file = st.file_uploader("Upload CSV file with 11 features", type=["csv"])
@@ -88,7 +91,7 @@ if uploaded_file:
     df["Prediction"] = preds
     df["Confidence"] = [f"{p:.2f}%" for p in probs]
 
-    st.markdown(" Results")
+    st.markdown("### 🧾 Results")
     st.dataframe(df)
 
     batch_csv = df.to_csv(index=False)
