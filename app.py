@@ -23,11 +23,30 @@ def plot_feature_importance(model, feature_names):
     plt.xlabel("Importance")
     plt.title("Feature Importance")
     st.pyplot(plt.gcf())
+    st.image("dna.png", width=1000)
+
+    st.markdown("""
+    <style>
+        .stButton > button {
+            background-color: #ADD8E6;
+            color: light Blue;
+            padding: 10px 24px;
+            border: none;
+            cursor: pointer;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        .stButton > button:hover {
+            background-color: #FFFFFF;
+        }
+    .stApp {
+        background-color: #ADD8E6;  /* Light blue background */
+    }
+    </style>
+    """, 
+    unsafe_allow_html=True)
 
 
-st.markdown("Enter values or upload a CSV to predict possible blood-related diseases.")
-
-st.header("Manual Input")
 inputs = {}
 features = [
     "hematocrit", "hemoglobin", "mch", "mchc", "mcv", "wbc", 
